@@ -1,0 +1,10 @@
+{
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "dependencies": {
+    "turbo": "^2.5.8"
+  },
+  "packageManager": "bun@1.22.23"
+}
