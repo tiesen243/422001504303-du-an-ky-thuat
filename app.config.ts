@@ -28,12 +28,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     },
 
     android: {
-      package: `com.nhom4.${packageJson.name.replace(/-/g, '')}`,
+      package: `com.nhom4.${packageJson.name.replace(/[0-9-]/g, '')}`,
       edgeToEdgeEnabled: true,
     },
 
     ios: {
-      bundleIdentifier: `com.nhom4.${packageJson.name.replace(/-/g, '')}`,
+      bundleIdentifier: `com.nhom4.${packageJson.name.replace(/[0-9-]/g, '')}`,
       supportsTablet: true,
     },
 
