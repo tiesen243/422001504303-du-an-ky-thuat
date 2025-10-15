@@ -32,6 +32,8 @@ export const ReceivedData: React.FC = () => {
 
   return (
     <Card>
+      <h3 className="sr-only">Received Data</h3>
+
       <CardHeader>
         <CardTitle>UART Data Monitor</CardTitle>
         <CardDescription>

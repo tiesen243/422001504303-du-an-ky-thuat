@@ -1,154 +1,144 @@
 import * as React from "react";
+import z from "zod";
 
 import { Button } from "~/components/ui/button";
 import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "~/components/ui/card";
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
+import { useForm } from "~/hooks/use-form";
 
 export const TestUart = () => {
-  const [speed, setSpeed] = React.useState<number>(1000);
-  const [numBytes, setNumBytes] = React.useState<number>(10);
-  const [progress, setProgress] = React.useState<number>(0);
-  const [isTesting, setIsTesting] = React.useState<boolean>(false);
+  const form = useForm({
+    defaultValues: { endpoint: "/api/send", speed: 1000, numBytes: 10 },
+    schema: z.object({
+      endpoint: z.string().min(1, "Endpoint is required"),
+      speed: z.number().min(10).max(10000),
+      numBytes: z.number().min(1).max(1000),
+    }),
+    async onSubmit(data) {
+      setSentBytes(0);
+      setReceivedBytes(0);
+      setErrorCount(0);
+
+      for (let i = 0; i < data.numBytes; i++) {
+        setSentBytes((prev) => prev + 1);
+
+        try {
+          const response = await fetch(data.endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: Math.floor(Math.random() * 256).toString(),
+            }),
+          });
+
+          if (!response.ok) throw new Error("Network response was not ok");
+          setReceivedBytes((prev) => prev + 1);
+        } catch (error) {
+          console.error("Error during UART test:", error);
+          setErrorCount((prev) => prev + 1);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, data.speed));
+      }
+    },
+  });
 
   const [sentBytes, setSentBytes] = React.useState<number>(0);
   const [receivedBytes, setReceivedBytes] = React.useState<number>(0);
   const [errorCount, setErrorCount] = React.useState<number>(0);
-
-  const sentRef = React.useRef<number>(0);
-  const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-
-  React.useEffect(() => {
-    if (!isTesting) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
-    }
-
-    sentRef.current = 0;
-    setSentBytes(0);
-    setReceivedBytes(0);
-    setErrorCount(0);
-    setProgress(0);
-
-    intervalRef.current = setInterval(() => {
-      if (sentRef.current < numBytes) {
-        const currentByte = sentRef.current + 1;
-        setSentBytes(currentByte);
-        sentRef.current = currentByte;
-
-        fetch("/api/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `Byte ${currentByte}` }),
-        })
-          .then((res) => {
-            if (res.ok) setReceivedBytes((prev) => prev + 1);
-          })
-          .catch(() => {
-            setErrorCount((prev) => prev + 1);
-          })
-          .finally(() => {
-            setProgress(Math.round((currentByte / numBytes) * 100));
-          });
-      } else {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
-        setIsTesting(false);
-      }
-    }, speed);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [isTesting, numBytes, speed]);
+  const { isPending } = form.state;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>UART Communication Tester</CardTitle>
-        <CardDescription>
+    <form
+      onSubmit={form.handleSubmit}
+      className="bg-card py-6 border rounded-xl shadow-sm text-card-foreground"
+    >
+      <h3 className="sr-only">UART Communication Tester</h3>
+
+      <FieldSet className="px-6">
+        <FieldLegend>UART Communication Tester</FieldLegend>
+        <FieldDescription>
           Tool for simulating and validating UART data transfer and error rates.
-        </CardDescription>
-      </CardHeader>
+        </FieldDescription>
 
-      <CardContent className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="speed">Speed (ms)</Label>
-            <Input
-              id="speed"
-              className="[appearance:textfield]"
-              placeholder="1000"
-              type="number"
-              min={0}
-              value={speed}
-              onChange={(e) => setSpeed(e.target.valueAsNumber)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="bytes">Number of bytes</Label>
-            <Input
-              id="bytes"
-              className="[appearance:textfield]"
-              placeholder="10"
-              type="number"
-              min={0}
-              value={numBytes}
-              onChange={(e) => setNumBytes(e.target.valueAsNumber)}
-            />
-          </div>
-        </div>
+        <FieldGroup className="grid grid-cols-2">
+          <form.Field
+            name="endpoint"
+            render={({ meta, field }) => (
+              <Field className="col-span-2">
+                <FieldLabel htmlFor={meta.fieldId}>API Endpoint</FieldLabel>
+                <Input {...field} disabled={isPending} />
+                <FieldError id={meta.errorId} errors={meta.errors} />
+              </Field>
+            )}
+          />
 
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setIsTesting(false);
-              setProgress(0);
-              setSentBytes(0);
-              setReceivedBytes(0);
-              setErrorCount(0);
-            }}
-            disabled={isTesting}
-          >
+          <form.Field
+            name="speed"
+            render={({ meta, field }) => (
+              <Field>
+                <FieldLabel htmlFor={meta.fieldId}>Speed (ms)</FieldLabel>
+                <Input
+                  {...field}
+                  type="number"
+                  className="[appearance:textfield]"
+                  disabled={isPending}
+                />
+                <FieldError id={meta.errorId} errors={meta.errors} />
+              </Field>
+            )}
+          />
+
+          <form.Field
+            name="numBytes"
+            render={({ meta, field }) => (
+              <Field>
+                <FieldLabel htmlFor={meta.fieldId}>Number of bytes</FieldLabel>
+                <Input
+                  {...field}
+                  type="number"
+                  className="[appearance:textfield]"
+                  disabled={isPending}
+                />
+                <FieldError id={meta.errorId} errors={meta.errors} />
+              </Field>
+            )}
+          />
+        </FieldGroup>
+
+        <FieldGroup className="grid grid-cols-2">
+          <Button type="reset" variant="outline" disabled={isPending}>
             Reset
           </Button>
-          <Button
-            className="w-full"
-            disabled={isTesting || numBytes <= 0 || speed <= 0}
-            onClick={() => setIsTesting(true)}
-          >
+          <Button type="submit" disabled={isPending}>
             Start Test
           </Button>
-        </div>
-      </CardContent>
+        </FieldGroup>
 
-      <CardFooter className="flex-col items-start gap-4">
-        <Progress aria-valuemin={0} aria-valuemax={100} value={progress} />
+        <Progress
+          aria-valuemin={0}
+          aria-valuemax={100}
+          value={
+            sentBytes && (sentBytes / form.state.getValues().numBytes) * 100
+          }
+        />
 
-        <div className="grid grid-cols-4 gap-4 w-full">
+        <FieldGroup className="flex-row justify-between items-center">
           <p className="text-sm font-semibold ">Results:</p>
           <p className="text-xs">Sent: {sentBytes} bytes</p>
           <p className="text-xs">Received: {receivedBytes} bytes</p>
           <p className="text-xs">Errors: {errorCount}</p>
-        </div>
-      </CardFooter>
-    </Card>
+        </FieldGroup>
+      </FieldSet>
+    </form>
   );
 };
