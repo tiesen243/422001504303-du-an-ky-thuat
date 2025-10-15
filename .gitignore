@@ -1,45 +1,34 @@
-# dependencies
-node_modules/
+# dependencies (bun install)
+node_modules
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
+# output
+out
+dist
+*.tgz
 
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*
-!.env.example
-
-# typescript
-*.tsbuildinfo
-
-# generated native folders
-/ios
-/android
+# code coverage
+coverage
+*.lcov
 
 # logs
-.cache/
-logs/
-*.log
+logs
+_.log
+report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# caches
+.eslintcache
+.cache
+*.tsbuildinfo
+
+# IntelliJ based IDEs
+.idea
+
+# Finder (MacOS) folder config
+.DS_Store

@@ -1,0 +1,7 @@
+[run]
+bun = true
+silent = true
+
+[serve.static]
+plugins = ["bun-plugin-tailwind"]
+env = "PUBLIC_*"
