@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>422001504303 - Dự án kỹ thuật</title>
+    <link href="styles/index.css" rel="stylesheet" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="header">
+        <h1 class="header__title">422001504303 - Dự án kỹ thuật</h1>
+        <button
+          id="toggle-theme"
+          class="ui-button ui-button--ghost ui-button--icon"
+          aria-label="Chuyển đổi chủ đề"
+        ></button>
+      </div>
+
+      <section class="ui-card">
+        <div class="ui-card__header">
+          <h2 class="ui-card__title">Kiểm Tra SoftSerial</h2>
+          <p class="ui-card__description">
+            Đây là phần kiểm tra chức năng SoftSerial trên thiết bị.
+          </p>
+        </div>
+
+        <div class="ui-card__content softserial-test">
+          <form class="softserial-test__form" id="softserial-test">
+            <fieldset class="ui-fieldset">
+              <div class="ui-fieldset__group">
+                <div class="ui-fieldset__field ui-fieldset__field--vertical">
+                  <label class="ui-fieldset__label" for="interval">
+                    Khoảng thời gian (ms):
+                  </label>
+                  <input
+                    id="interval"
+                    class="ui-input"
+                    type="number"
+                    value="1000"
+                  />
+                </div>
+                <div class="ui-fieldset__field ui-fieldset__field--vertical">
+                  <label class="ui-fieldset__label" for="count">
+                    Số gói:
+                  </label>
+                  <input id="count" class="ui-input" type="number" value="10" />
+                </div>
+              </div>
+
+              <div class="ui-fieldset__field ui-fieldset__field--vertical">
+                <button class="ui-button ui-button--primary ui-button--md">
+                  Bắt đầu kiểm tra
+                </button>
+              </div>
+            </fieldset>
+          </form>
+
+          <div class="softserial-test__results">
+            <progress
+              id="progress"
+              class="ui-progress"
+              value="0"
+              max="100"
+            ></progress>
+            <p id="status">Chưa bắt đầu kiểm tra SoftSerial.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ui-card">
+        <div class="ui-card__header">
+          <h2 class="ui-card__title">Nhật ký nối tiếp</h2>
+          <p class="ui-card__description">
+            Dưới đây là danh sách các nhật ký được ghi lại trong hệ thống.
+          </p>
+        </div>
+
+        <div class="ui-card__content log-list">
+          <ul class="log-list__content" id="log-list"></ul>
+        </div>
+      </section>
+    </main>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
