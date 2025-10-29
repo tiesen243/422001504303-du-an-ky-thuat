@@ -9,10 +9,13 @@
 #include "stress-test.hpp"
 
 ESP8266WebServer server(PORT);
-EspSoftwareSerial::UART softSerial(D1, D2);  // RX, TX
+EspSoftwareSerial::UART softSerial(D5, D6); // RX, TX
 Logger logger;
+
 StressTest stressTest(&softSerial, &logger);
-                                          
+String text;
+char c;
+
 void handleFile(const char* path, const char* contentType) {
   File file = LittleFS.open(path, "r");
   if (!file)
@@ -96,16 +99,24 @@ void loop() {
   server.handleClient();
   stressTest.loop();
 
-  if (Serial.available()) {
-    String inputData = Serial.readStringUntil('\n'); inputData.trim();
-    softSerial.println(inputData);
-    logger.add("Sent: " + inputData);
+  // if (Serial.available()) {
+  //   inputData = Serial.readStringUntil('\n'); inputData.trim();
+  //   softSerial.println(inputData);
+  //   logger.add("Sent: " + inputData);
+  // }
+
+  while (softSerial.available()) {
+    delay(5);
+    c = softSerial.read();
+    text += c;
   }
 
-  if (softSerial.available()) {
-    String receivedData = softSerial.readStringUntil('\n'); receivedData.trim();
-    logger.add("Recv: " + receivedData);
+  if (text.length() > 20) {
+    text = text.substring(1, 11);
+    Serial.println(text);
+    logger.add("Recv: " + text);
   }
+  text = "";
 
   delay(50);
 }
