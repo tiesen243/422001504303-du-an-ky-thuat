@@ -266,6 +266,12 @@
       align-items: center;
     }
 
+    .ui-fieldset__field--grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: calc(var(--spacing) * 4);
+    }
+
     .ui-fieldset__label {
       width: fit-content;
       display: flex;

@@ -26,35 +26,41 @@
         </div>
 
         <div class="ui-card__content softserial-test">
-          <form class="softserial-test__form" id="softserial-test">
-            <fieldset class="ui-fieldset">
-              <div class="ui-fieldset__group">
-                <div class="ui-fieldset__field ui-fieldset__field--vertical">
-                  <label class="ui-fieldset__label" for="interval">
-                    Khoảng thời gian (ms):
-                  </label>
-                  <input
-                    id="interval"
-                    class="ui-input"
-                    type="number"
-                    value="1000"
-                  />
-                </div>
-                <div class="ui-fieldset__field ui-fieldset__field--vertical">
-                  <label class="ui-fieldset__label" for="count">
-                    Số gói:
-                  </label>
-                  <input id="count" class="ui-input" type="number" value="10" />
-                </div>
-              </div>
-
+          <fieldset class="ui-fieldset">
+            <div class="ui-fieldset__group">
               <div class="ui-fieldset__field ui-fieldset__field--vertical">
-                <button class="ui-button ui-button--primary ui-button--md">
-                  Bắt đầu kiểm tra
-                </button>
+                <label class="ui-fieldset__label" for="interval">
+                  Khoảng thời gian (ms):
+                </label>
+                <input
+                  id="interval"
+                  class="ui-input"
+                  type="number"
+                  value="1000"
+                />
               </div>
-            </fieldset>
-          </form>
+              <div class="ui-fieldset__field ui-fieldset__field--vertical">
+                <label class="ui-fieldset__label" for="count"> Số gói: </label>
+                <input id="count" class="ui-input" type="number" value="10" />
+              </div>
+            </div>
+
+            <div class="ui-fieldset__field ui-fieldset__field--grid">
+              <button
+                id="start-test"
+                class="ui-button ui-button--primary ui-button--md"
+              >
+                Bắt đầu kiểm tra
+              </button>
+              <button
+                id="stop-test"
+                class="ui-button ui-button--secondary ui-button--md"
+                disabled
+              >
+                Dừng kiểm tra
+              </button>
+            </div>
+          </fieldset>
 
           <div class="softserial-test__results">
             <progress

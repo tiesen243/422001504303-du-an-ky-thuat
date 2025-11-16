@@ -9,7 +9,7 @@
 #include "stress-test.hpp"
 
 ESP8266WebServer server(PORT);
-EspSoftwareSerial::UART softSerial(D5, D6); // RX, TX
+EspSoftwareSerial::UART softSerial(D7, D8); // RX, TX
 Logger logger;
 
 StressTest stressTest(&softSerial, &logger);
@@ -72,7 +72,7 @@ void setup() {
     server.send(200, "application/json", logger.get());
   });
 
-  server.on("/startTest", HTTP_POST, []() {
+  server.on("/start-test", HTTP_POST, []() {
     if (!server.hasArg("plain")) {
       server.send(400, "application/json", "{\"error\":\"No data\"}");
       return;
@@ -87,7 +87,11 @@ void setup() {
     stressTest.start(count, interval);
     server.send(200, "application/json", "{\"status\":\"started\"}");
   });
-  server.on("/testStatus", HTTP_GET, []() {
+  server.on("/stop-test", []() {
+    stressTest.stop();
+    server.send(200, "application/json", "{\"status\":\"stopped\"}");
+  });
+  server.on("/test-status", HTTP_GET, []() {
     server.send(200, "application/json", stressTest.getStatusJson());
   });
 
@@ -99,11 +103,12 @@ void loop() {
   server.handleClient();
   stressTest.loop();
 
-  // if (Serial.available()) {
-  //   inputData = Serial.readStringUntil('\n'); inputData.trim();
-  //   softSerial.println(inputData);
-  //   logger.add("Sent: " + inputData);
-  // }
+  if (Serial.available()) {
+    String inputData = Serial.readStringUntil('\n'); inputData.trim();
+    softSerial.println(inputData);
+    logger.add("Sent: " + inputData);
+
+  }
 
   while (softSerial.available()) {
     delay(5);
@@ -118,5 +123,5 @@ void loop() {
   }
   text = "";
 
-  delay(50);
+  delay(100);
 }

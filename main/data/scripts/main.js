@@ -1,6 +1,9 @@
 const toggleThemeBtn = document.getElementById("toggle-theme");
+
 const logListEl = document.getElementById("log-list");
-const softserialTestFromEl = document.getElementById("softserial-test");
+
+const startTestBtn = document.getElementById("start-test");
+const stopTestBtn = document.getElementById("stop-test");
 const progressEl = document.getElementById("progress");
 const statusEl = document.getElementById("status");
 
@@ -60,12 +63,16 @@ async function fetchLogs() {
 
 let intervalId;
 
-softserialTestFromEl.addEventListener("submit", async (e) => {
+startTestBtn.addEventListener("click", async (e) => {
   e.preventDefault();
+
+  startTestBtn.disabled = true;
+  stopTestBtn.disabled = false;
+
   const interval = parseInt(document.getElementById("interval").value);
   const count = parseInt(document.getElementById("count").value);
 
-  await fetch("/startTest", {
+  await fetch("/start-test", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ interval, count }),
@@ -78,8 +85,18 @@ softserialTestFromEl.addEventListener("submit", async (e) => {
   intervalId = setInterval(updateStatus, 1000);
 });
 
+stopTestBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  startTestBtn.disabled = false;
+  stopTestBtn.disabled = true;
+
+  await fetch("/stop-test", { method: "POST" });
+  if (intervalId) clearInterval(intervalId);
+});
+
 async function updateStatus() {
-  const res = await fetch("/testStatus");
+  const res = await fetch("/test-status");
   const data = await res.json();
 
   const percent = data.total ? (data.sent / data.total) * 100 : 0;
@@ -87,7 +104,11 @@ async function updateStatus() {
 
   statusEl.textContent = `Đã gửi: ${data.sent}/${data.total} | Thành công: ${data.success} | Thất bại: ${data.failed}`;
 
-  if (!data.running) clearInterval(intervalId);
+  if (!data.running) {
+    clearInterval(intervalId);
+    startTestBtn.disabled = false;
+    stopTestBtn.disabled = true;
+  }
 }
 
 window.addEventListener("load", () => {

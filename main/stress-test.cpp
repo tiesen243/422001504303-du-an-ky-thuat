@@ -9,12 +9,12 @@ void StressTest::start(unsigned int count, unsigned int intervalMs) {
   sent = success = failed = 0;
   running = true;
   lastSend = millis();
-  if (logger) logger->add("Stress test started: " + String(count) + " packets, interval " + String(interval) + " ms");
+  if (logger) logger->add("Bắt đầu kiểm tra tải: " + String(count) + " gói tin, khoảng cách " + String(interval) + " ms");
 }
 
 void StressTest::stop() {
   running = false;
-  if (logger) logger->add("Stress test stopped at " + String(sent) + "/" + String(total));
+  if (logger) logger->add("Kiểm tra tải dừng tại " + String(sent) + "/" + String(total));
 }
 
 void StressTest::loop() {
@@ -29,11 +29,11 @@ void StressTest::loop() {
   sent++;
 
   success++;
-  if (logger) logger->add("Sent: " + packet);
+  if (logger) logger->add("Đã nhận: " + packet);
 
   if (sent >= total) {
     running = false;
-    if (logger) logger->add("Stress test completed successfully");
+    if (logger) logger->add("Kiểm tra tải hoàn thành thành công");
   }
 }
 

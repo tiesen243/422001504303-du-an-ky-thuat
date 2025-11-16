@@ -22,7 +22,7 @@ public:
 
   void start(unsigned int count, unsigned int intervalMs);
   void stop();
-  void loop(); // gọi trong main loop
+  void loop();
   String getStatusJson() const;
   bool isRunning() const { return running; }
 };
