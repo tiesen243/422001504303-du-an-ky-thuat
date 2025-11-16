@@ -5,7 +5,7 @@
 Dự án này tập trung phát triển các chức năng thông minh trên nền tảng ESP8266, bao gồm: đọc dữ liệu cảm biến, giao tiếp với server/HTTP. Mục tiêu là xây dựng một hệ thống nhúng linh hoạt, dễ mở rộng, phục vụ cho các ứng dụng tự động hóa và kết nối vạn vật.
 
 - **Ngôn ngữ:** C/C++ (Arduino)
-- **Phần cứng:** ESP8266 - ESP12S
+- **Phần cứng:** ESP8266 - ESP12S, RFID RDM6300
 
 ## Danh sách thành viên
 
