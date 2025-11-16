@@ -7,6 +7,14 @@ Dự án này tập trung phát triển các chức năng thông minh trên nề
 - **Ngôn ngữ:** C/C++ (Arduino)
 - **Phần cứng:** ESP8266 - ESP12S
 
+## Danh sách thành viên
+
+| Họ tên | Mã số sinh viên | Công việc |
+| ------ | --------------- | --------- |
+| Nguyễn Văn Lam      | 21133091           | Firmware         |
+| Trần Tiến     | 22653991               | Software         |
+| Bằng Tấn Việt      | 22720251               | Hardware         |
+
 ## Thư viện
 
 - [ArduinoJson](https://arduinojson.org/): Xử lý dữ liệu JSON hiệu quả trên Arduino.
